@@ -1,1 +1,5 @@
-/SQL/mysql-files/*.csv
+/SQL/mysql-files
+/SQL/mysql
+/NoSQL/configdb
+/NoSQL/db
+
