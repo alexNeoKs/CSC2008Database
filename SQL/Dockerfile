@@ -1,0 +1,3 @@
+FROM mysql:8.0.32 AS SQL
+
+WORKDIR /SQL

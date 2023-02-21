@@ -1,0 +1,3 @@
+FROM mongo:6.0.4 AS NoSQL
+
+WORKDIR /NoSQL

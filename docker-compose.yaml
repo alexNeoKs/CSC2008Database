@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+
+  sql:
+    container_name: MySQL
+    build:
+      dockerfile: Dockerfile
+      context: ./SQL
+    volumes:
+      - ./SQL/mysql:/var/lib/mysql
+      - ./SQL/mysql-files:/var/lib/mysql-files/
+    ports:
+      - 3306:3306
+    restart: unless-stopped     
+    image: sql
+    environment:
+      MYSQL_DATABASE: spotify
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: admin
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+
+  nosql:
+    container_name: MongoDB
+    build:
+      dockerfile: Dockerfile
+      context: ./NoSQL
+    volumes:
+      - ./NoSQL/configdb:/data/configdb
+      - ./NoSQL/db:/data/db
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+    image: nosql
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
