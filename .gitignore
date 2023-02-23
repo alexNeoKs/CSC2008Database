@@ -4,7 +4,8 @@ SQL/mysql/README.txt
 SQL/mysql-files/README.txt
 
 /SQL/mysql-files
-/SQL/mysql
+/SQL/mysql/*
+!SQL/mysql/spotify
 /NoSQL/configdb
 /NoSQL/db
 
