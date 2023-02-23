@@ -1,11 +1,11 @@
-SHOW VARIABLES LIKE "sql_safe_updates";
-SHOW VARIABLES LIKE "local_infile";
+#-- SHOW VARIABLES LIKE "sql_safe_updates";
+#-- SHOW VARIABLES LIKE "local_infile";
 
 SET SQL_SAFE_UPDATES = 0;
 SET GLOBAL local_infile=1;
 USE spotify;
 
-CREATE TABLE `albums` (
+CREATE TABLE `tmp_albums` (
   `id` varchar(1024) DEFAULT NULL,
   `name` varchar(2048) DEFAULT NULL,
   `album` varchar(2048) DEFAULT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE `albums` (
 ) ENGINE=InnoDB;
 
 LOAD DATA INFILE '/var/lib/mysql-files/albums.csv' 
-REPLACE INTO TABLE `spotify`.`albums` 
+REPLACE INTO TABLE `spotify`.`tmp_albums` 
 FIELDS TERMINATED BY ',' 
 OPTIONALLY ENCLOSED BY '"' 
 ESCAPED BY '"' 
@@ -43,7 +43,7 @@ IGNORE 1 LINES
 `energy`, `key`, `loudness`, `mode`, `speechiness`, `acousticness`, `instrumentalness`, `liveness`, `valence`, `tempo`, 
 `duration_ms`, `time_signature`, `year`, `release_date`);
 
-CREATE TABLE `songs` (
+CREATE TABLE `tmp_songs` (
 	`index` INT(11) NULL,
 	`title` VARCHAR(2048) NULL DEFAULT NULL,
 	`artist` VARCHAR(255) NULL DEFAULT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE `songs` (
 ) ENGINE=InnoDB;
 
 LOAD DATA INFILE '/var/lib/mysql-files/songs.csv' 
-REPLACE INTO TABLE `spotify`.`songs` 
+REPLACE INTO TABLE `spotify`.`tmp_songs` 
 CHARACTER SET latin2
 FIELDS TERMINATED BY ',' 
 OPTIONALLY ENCLOSED BY '"' 
@@ -73,7 +73,7 @@ IGNORE 1 LINES
 `bpm`,`energy`,`dance`,`decibel`,`liveliness`,
 `val`,`duration`,`acoustics`,`spch`,`pop`);
 
-CREATE TABLE `artists` (
+CREATE TABLE `tmp_artists` (
 	`rank` INT(11) NULL,
 	`index` INT(11) NULL,
 	`artist` VARCHAR(255) NULL DEFAULT NULL,
@@ -90,7 +90,7 @@ CREATE TABLE `artists` (
 ) ENGINE=InnoDB;
 
 LOAD DATA INFILE '/var/lib/mysql-files/artists.csv' 
-REPLACE INTO TABLE `spotify`.`artists` 
+REPLACE INTO TABLE `spotify`.`tmp_artists` 
 FIELDS TERMINATED BY ',' 
 OPTIONALLY ENCLOSED BY '"' 
 ESCAPED BY '"' 
@@ -99,8 +99,20 @@ IGNORE 1 LINES
 (`rank`,`index`,`artist`,`gender`,`age`,`type`,
  `country`,`city_1`,`district_1`,`city_2`,`district_2`,`city_3`,`district_3`);
 
+
+CREATE TABLE albums AS 
+( SELECT DISTINCT tmp_albums.* FROM tmp_albums, tmp_songs, tmp_artists WHERE tmp_albums.name = tmp_songs.title AND tmp_songs.artist = tmp_artists.artist );
+
+CREATE TABLE songs AS 
+( SELECT DISTINCT tmp_songs.* FROM tmp_albums, tmp_songs, tmp_artists WHERE tmp_albums.name = tmp_songs.title AND tmp_songs.artist = tmp_artists.artist );
+
+CREATE TABLE artists AS 
+( SELECT DISTINCT tmp_artists.* FROM tmp_albums, tmp_songs, tmp_artists WHERE tmp_albums.name = tmp_songs.title AND tmp_songs.artist = tmp_artists.artist );
+
+DROP TABLE IF EXISTS tmp_albums;
+DROP TABLE IF EXISTS tmp_songs;
+DROP TABLE IF EXISTS tmp_artists;
+
 SELECT * FROM albums;
 SELECT * FROM songs;
 SELECT * FROM artists;
-
-SELECT DISTINCT albums.* FROM albums, songs, artists WHERE albums.name = songs.title AND songs.artist = artists.artist

@@ -1,7 +1,7 @@
 import os
-from flask   import Flask, render_template
-from mysql   import MySQL
-from mongodb import MongoDB
+from flask import Flask, render_template
+from sql   import MySQL
+from nosql import MongoDB
 
 
 mySQL   = MySQL()
