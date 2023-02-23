@@ -1,20 +1,41 @@
 import os
-from flask import Flask, render_template
-from sql   import MySQL
-from nosql import MongoDB
+from   flask  import Flask, render_template, jsonify, request
+from   sql    import MySQL
+from   nosql  import MongoDB
+
+try:
+    mySQL = None
+    mySQL = MySQL()
+except Exception as err:
+    print(err)
+
+try:
+    mongoDB = None
+    mongoDB = MongoDB()
+except Exception as err:
+    print(err)
+
+try:
+    app  = None
+    app  = Flask( __name__ )
+
+    @app.route("/")
+    def home():
+        return render_template('index.html')
 
 
-mySQL   = MySQL()
-mongoDB = MongoDB()
-app     = Flask( __name__ )
-
-@app.route("/")
-def home():
-    return render_template('index.html')
+    @app.route("/sql/query", methods=["POST"])
+    def sql_query():
+        sql_statements = request.json['sql_statements']
+        results = mySQL.query(sql_statements)
+        return { 'results' : results }
+        
+except Exception as err:
+    print(err)
 
 
 if __name__ == "__main__":
-    mySQL.test()
-    mongoDB.test()
-
-    app.run( host="0.0.0.0" , port=int("3000") , debug=True )
+    if mySQL is not None and mongoDB is not None and app is not None:
+        
+        mongoDB.test()
+        app.run( host="0.0.0.0" , port=int("3000") , debug=True )

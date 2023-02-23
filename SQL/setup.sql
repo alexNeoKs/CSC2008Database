@@ -113,6 +113,6 @@ DROP TABLE IF EXISTS tmp_albums;
 DROP TABLE IF EXISTS tmp_songs;
 DROP TABLE IF EXISTS tmp_artists;
 
-SELECT * FROM albums;
-SELECT * FROM songs;
-SELECT * FROM artists;
+SELECT * FROM albums ORDER BY `album_id`,`track_number`;
+SELECT * FROM songs ORDER BY `index`;
+SELECT * FROM artists ORDER BY `rank`,`index`;

@@ -2,6 +2,25 @@ version: '3.8'
 
 services:
 
+  flask:
+    container_name: Flask
+    build:
+      dockerfile: Dockerfile
+      context: ./Flask
+    volumes:
+      - ./Flask/src:/src
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    image: flask
+    depends_on:
+      sql:
+        condition: service_healthy
+    environment:
+      - WAIT_HOSTS=sql:3306
+    networks:
+      - localnet
+
   sql:
     container_name: MySQL
     build:
@@ -19,10 +38,17 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: admin
+      SERVICE_NAME: sql
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --skip-character-set-client-handshake
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      interval: 1s
+      retries: 120
+    networks:
+      - localnet
 
   nosql:
     container_name: MongoDB
@@ -39,15 +65,9 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - localnet
 
-  flask:
-    container_name: Flask
-    build:
-      dockerfile: Dockerfile
-      context: ./Flask
-    volumes:
-      - ./Flask/src:/src
-    ports:
-      - 3000:3000
-    restart: unless-stopped
-    image: flask
+networks:
+  localnet:
+    driver: bridge

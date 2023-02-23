@@ -2,6 +2,43 @@
 <html>
     <head>
         <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <script>
+            function SQL_Query()
+            {
+                const sql_statements = document.getElementById('sql_statements')
+                const output         = document.getElementById('output')
+
+                const credentials = {
+                                        'username' : 'test',
+                                        'password' : '1234',
+                                        'sql_statements' : sql_statements.value,
+                                    };
+
+                const request_header = {
+                                            method  : 'POST',
+                                            headers : {
+                                                        'Accept'       : 'application/json',
+                                                        'Content-Type' : 'application/json',
+                                                    },
+                                            body : JSON.stringify(credentials),
+                                        };
+
+                try
+                {
+                    fetch( 'http://localhost:3000/sql/query' , request_header )
+                        .then(  response => response.json()                              )
+                        .then(  response => {
+                            const { results } = response
+                            output.value = results
+                        })
+                        .catch( err      => console.log(err) )
+                }
+                catch(err)
+                {
+                    console.log(err)
+                }
+            }
+        </script>
     </head>
 
     <body>
@@ -9,15 +46,15 @@
         <table>
             <tr>
                 <td>
-                    <div>Input your SQL statements below :   <button>Execute</button></div>
+                    <div>Input your SQL statements below :   <button onClick='SQL_Query()'>Execute</button></div>
                     <br/>
-                    <textarea></textarea>
+                    <textarea id='sql_statements'></textarea>
                 </td>
 
                 <td>
                     <div>Output : </div>
                     <br/>
-                    <textarea disabled></textarea>
+                    <textarea id='output' disabled></textarea>
                 </td>
             </tr>
         </table>
