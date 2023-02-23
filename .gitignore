@@ -1,14 +1,14 @@
 NoSQL/configdb/README.txt
 NoSQL/db/README.txt
+
 SQL/mysql/README.txt
 SQL/mysql-files/README.txt
 
 /SQL/mysql-files
-/SQL/mysql/*
-!SQL/mysql/spotify
+/SQL/mysql
+
 /NoSQL/configdb
 /NoSQL/db
-
 
 __pycache__/
 /Flask/__pycache__/
