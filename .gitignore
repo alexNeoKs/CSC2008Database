@@ -7,3 +7,7 @@ SQL/mysql-files/README.txt
 /SQL/mysql
 /NoSQL/configdb
 /NoSQL/db
+
+
+__pycache__/
+/Flask/__pycache__/

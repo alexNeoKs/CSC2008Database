@@ -1,0 +1,18 @@
+body  
+{
+    background-color: plum;
+}
+
+h3
+{
+    color:blue;
+    text-align: center;
+}
+
+
+textarea
+{
+    resize: none;
+    height: 25em;
+    width: 50em;
+}
