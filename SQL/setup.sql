@@ -73,7 +73,6 @@ IGNORE 1 LINES
 `bpm`,`energy`,`dance`,`decibel`,`liveliness`,
 `val`,`duration`,`acoustics`,`spch`,`pop`);
 
-DROP TABLE artists;
 CREATE TABLE `artists` (
 	`rank` INT(11) NULL,
 	`index` INT(11) NULL,
@@ -103,3 +102,5 @@ IGNORE 1 LINES
 SELECT * FROM albums;
 SELECT * FROM songs;
 SELECT * FROM artists;
+
+SELECT DISTINCT albums.* FROM albums, songs, artists WHERE albums.name = songs.title AND songs.artist = artists.artist

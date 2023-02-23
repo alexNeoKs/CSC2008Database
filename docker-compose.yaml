@@ -39,3 +39,13 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
+
+  flask:
+    container_name: Flask
+    build:
+      dockerfile: Dockerfile
+      context: ./Flask
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    image: flask
