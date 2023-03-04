@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+
+  mongodb:
+      container_name: MongoDB
+      build:
+        dockerfile: Dockerfile
+        context: ./NoSQL
+      volumes:
+        - ./NoSQL/configdb:/data/configdb
+        - ./NoSQL/db:/data/db
+      ports:
+        - 27019:27019
+      restart: unless-stopped
+      image: mongodb
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: admin
+        MONGO_INITDB_ROOT_PASSWORD: password
+        SERVICE_NAME: mongodb
+
+# docker compose -f lab8.yaml up
+# docker exec -it  MongoDB mongosh

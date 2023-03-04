@@ -59,7 +59,7 @@ services:
       - ./NoSQL/configdb:/data/configdb
       - ./NoSQL/db:/data/db
     ports:
-      - 27017:27017
+      - 27019:27019
     restart: unless-stopped
     image: nosql
     environment:
