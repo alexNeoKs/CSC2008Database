@@ -20,4 +20,4 @@ services:
         SERVICE_NAME: mongodb
 
 # docker compose -f lab8.yaml up
-# docker exec -it  MongoDB mongosh
+# docker exec -it  MongoDB mongosh -u admin -p password
