@@ -1,4 +1,6 @@
 import os
+import numpy  as np
+import pandas as pd
 from   flask  import Flask, render_template, jsonify, request
 from   sql    import MySQL
 from   nosql  import MongoDB
