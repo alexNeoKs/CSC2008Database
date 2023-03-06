@@ -65,8 +65,10 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
+      SERVICE_NAME: mongodb
     networks:
       - localnet
+    # docker exec -it  MongoDB mongosh -u admin -p password
 
 networks:
   localnet:
