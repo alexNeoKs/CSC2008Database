@@ -68,7 +68,11 @@ services:
       SERVICE_NAME: mongodb
     networks:
       - localnet
-    # docker exec -it  MongoDB mongosh -u admin -p password
+
+# docker pull mongo                                    # Create the image
+# docker run -d -p 27019:27019 --name MongoDB mongo    # Run the container
+# docker exec -it MongoDB mongosh                      # Connect to database and display terminal to accept mongo command without credentials
+# docker exec -it MongoDB mongosh -u admin -p password # Connect to database and display terminal to accept mongo command with credentials
 
 networks:
   localnet:
