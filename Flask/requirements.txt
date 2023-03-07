@@ -1,4 +1,5 @@
 flask
 mysql-connector-python
+pymongo
 numpy
 pandas

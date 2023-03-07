@@ -31,4 +31,7 @@ except Exception as err:
 if __name__ == "__main__":
     if mySQL is not None and mongoDB is not None and app is not None:
         mongoDB.test()
+        arr = np.array([1, 2, 3, 4, 5])
+        print(arr)
+        print(type(arr))
         app.run( host="0.0.0.0" , port=int("3000") , debug=True )
