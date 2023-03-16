@@ -5,6 +5,10 @@ SET SQL_SAFE_UPDATES = 0;
 SET GLOBAL local_infile=1;
 USE spotify;
 
+DROP TABLE IF EXISTS tmp_albums;
+DROP TABLE IF EXISTS tmp_songs;
+DROP TABLE IF EXISTS tmp_artists;
+
 CREATE TABLE `tmp_albums` (
   `id` varchar(1024) DEFAULT NULL,
   `name` varchar(2048) DEFAULT NULL,
@@ -99,6 +103,9 @@ IGNORE 1 LINES
 (`rank`,`index`,`artist`,`gender`,`age`,`type`,
  `country`,`city_1`,`district_1`,`city_2`,`district_2`,`city_3`,`district_3`);
 
+DROP TABLE IF EXISTS albums;
+DROP TABLE IF EXISTS songs;
+DROP TABLE IF EXISTS artists;
 
 CREATE TABLE albums AS 
 ( SELECT DISTINCT tmp_albums.* FROM tmp_albums, tmp_songs, tmp_artists WHERE tmp_albums.name = tmp_songs.title AND tmp_songs.artist = tmp_artists.artist );
@@ -109,10 +116,6 @@ CREATE TABLE songs AS
 CREATE TABLE artists AS 
 ( SELECT DISTINCT tmp_artists.* FROM tmp_albums, tmp_songs, tmp_artists WHERE tmp_albums.name = tmp_songs.title AND tmp_songs.artist = tmp_artists.artist );
 
-DROP TABLE IF EXISTS tmp_albums;
-DROP TABLE IF EXISTS tmp_songs;
-DROP TABLE IF EXISTS tmp_artists;
-
-SELECT * FROM albums ORDER BY `album_id`,`track_number`;
-SELECT * FROM songs ORDER BY `index`;
-SELECT * FROM artists ORDER BY `rank`,`index`;
+#-- DROP TABLE IF EXISTS tmp_albums;
+#-- DROP TABLE IF EXISTS tmp_songs;
+#-- DROP TABLE IF EXISTS tmp_artists;
