@@ -115,6 +115,18 @@ def build_Albums( db_connect ):
     print(running_total1, " records inserted into tmp1")
     print(running_total2, " records inserted into tmp2")
 
+    deleteTable1 = "DROP TABLE IF EXISTS normalized_song_lookup_artist;"
+    deleteTable2 = "DROP TABLE IF EXISTS normalized_artists;"
+    db_cursor.execute(deleteTable1)
+    db_cursor.execute(deleteTable2)
+    db_connect.commit()
+
+    createTable1 = "CREATE TABLE normalized_song_lookup_artist AS ( SELECT DISTINCT id as song_id, artist_id  FROM tmp2 ORDER BY id,artist_id );"
+    createTable2 = "CREATE TABLE normalized_artists AS ( SELECT DISTINCT artist_id , artist FROM tmp1 , tmp2 WHERE tmp1.id = tmp2.id AND tmp1.ord = tmp2.ord ORDER BY artist);"
+    db_cursor.execute(createTable1)
+    db_cursor.execute(createTable2)
+    db_connect.commit()
+
 #-------------------------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
