@@ -115,7 +115,61 @@ ALTER TABLE normalized_song_lookup_artist RENAME song_artist;
 DELETE FROM artist WHERE artist_id = '1G9G7WwrXka3Z1r7aIDjI7';
 ALTER TABLE artist ADD PRIMARY KEY (artist_id);
 INSERT INTO artist VALUES ( '1G9G7WwrXka3Z1r7aIDjI7' , 'Outkast' );
+ALTER TABLE artist ADD INDEX artist_name ( artist );
 
 ALTER TABLE song_artist ADD PRIMARY KEY (song_id,artist_id);
+ALTER TABLE song_artist ADD INDEX song   ( song_id   );
+ALTER TABLE song_artist ADD INDEX artist ( artist_id );
+
+ALTER TABLE song_album ADD INDEX disc_track ( disc_number , track_number );
+ALTER TABLE song_album ADD INDEX song   ( song_id  );
+ALTER TABLE song_album ADD INDEX album  ( album_id );
+
+ALTER TABLE song   ADD INDEX song_name ( `name` );
+ALTER TABLE album  ADD INDEX album_name ( album );
+
+DELIMITER $
+CREATE PROCEDURE spotify.FindSongsAndAlbumsByArtistName( IN artistName VARCHAR(255) )
+BEGIN
+	SELECT 
+	song.`name`,
+	song.`year`,
+	song_album.`disc_number`,
+	song_album.`track_number`,
+	album.`album`,
+    a.`artist` 
+	FROM 
+	( SELECT artist.`artist`, song_artist.`song_id` 
+	  FROM       artist 
+	  INNER JOIN song_artist ON artist.`artist_id` = song_artist.`artist_id` 
+	  WHERE (artist.`artist`) LIKE (CONCAT('%', artistName ,'%')) ) a 
+	  INNER JOIN song       ON a.`song_id`      = song.`song_id` 
+	  INNER JOIN song_album ON a.`song_id`      = song_album.`song_id`
+	  INNER JOIN album      ON album.`album_id` = song_album.`album_id`
+	  ORDER BY a.`artist`, song.`year` DESC, album.`album` , song_album.`disc_number`, song_album.`track_number`;
+END$
+DELIMITER ;
+
+DELIMITER $
+CREATE PROCEDURE spotify.FindSongsAndArtistsByAlbumName( IN albumName VARCHAR(255) )
+BEGIN
+	SELECT  
+	song.`name`,
+	song.`year`,
+	a.`disc_number`,
+	a.`track_number`,
+	a.`album`,
+	artist.`artist` 
+	FROM 
+	( SELECT  album.`album`, song_album.`song_id`,song_album.`disc_number`,song_album.`track_number`
+	FROM album 
+	INNER JOIN song_album ON album.`album_id` = song_album.`album_id`
+	WHERE (album.`album`) LIKE (CONCAT('%', albumName ,'%')) ) a
+	INNER JOIN song        ON a.`song_id`       = song.`song_id` 
+	INNER JOIN song_artist ON a.`song_id`       = song_artist.`song_id`
+	INNER JOIN artist      ON artist.`artist_id`= song_artist.`artist_id`
+	ORDER BY a.`album`, artist.`artist`, song.`year` DESC,  a.`disc_number`, a.`track_number`;
+END$
+DELIMITER ;
 
 
