@@ -60,11 +60,17 @@ if __name__ == "__main__":
     # Connect to MongoDB
     myMongoClient = connectMongo()
 
+    # Drop database called spotify
+    myMongoClient.drop_database("spotify")
+
     # Get Schema from MongoDB
     myMongoDB = myMongoClient["spotify"]
 
+    # Get collection count
+    print("MongoDB Collection Count: " + str(len(myMongoDB.list_collection_names())))
+
     # List of tables to migrate
-    tableList = ["acousticness", "album", "danceability", "energy", "explicit","gender","instrumentalness","key","liveness","loudness","mode","normalized_artists", "normalized_song_lookup_artist","song","song_album","speechiness","tempo","valence"]
+    tableList = ["acousticness", "album", "artist", "danceability", "energy", "explicit","gender","instrumentalness", "key", "liveness", "loudness", "mode", "song", "song_album", "song_artist", "speechiness", "tempo", "valence"]
 
     # Loop through tables
     for table in tableList:
@@ -72,3 +78,11 @@ if __name__ == "__main__":
         myresult = getMySQLData(mySqlDB, table)
         # Push data to MongoDB
         pushMongoData(myMongoDB, table, myresult)
+
+    #Print complete message
+    print("Migration Complete")
+    print("MongoDB Collection Count: " + str(len(myMongoDB.list_collection_names())))
+
+    #close all connection
+    mySqlDB.close()
+    myMongoClient.close()
