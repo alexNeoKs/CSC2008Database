@@ -51,6 +51,26 @@ def pushMongoData(mydb, tableName, myresult):
     if len(myresult) > 0:
         x = mycol.insert_many(myresult)
         print(tableName + ": " + str(len(x.inserted_ids)))
+        # Check if the "song_id" field exists in a document
+        song_id = mycol.find_one({"song_id": {"$exists": True}})
+        if song_id:
+            mycol.create_index([("song_id",1)])
+            print("Indexed column: 'song_id'")
+        # Check if the "album_id" field exists in a document
+        album_id = mycol.find_one({"album_id": {"$exists": True}})
+        if album_id:
+            mycol.create_index([("album_id",1)])
+            print("Indexed column: 'album_id'")
+        # Check if the "artist_id" field exists in a document
+        artist_id = mycol.find_one({"artist_id": {"$exists": True}})
+        if artist_id:
+            mycol.create_index([("artist_id",1)])
+            print("Indexed column: 'artist_id'")
+        # Check if the "artist" field exists in a document
+        artist = mycol.find_one({"artist": {"$exists": True}})
+        if artist:
+            mycol.create_index([("artist",1)])
+            print("Indexed column: 'artist'")
 
 
 # Main
