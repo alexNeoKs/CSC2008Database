@@ -5,19 +5,19 @@ import pymongo
 def connectMySQL():
     try:
         db_connect = None
-        db_connect = mysql.connector.connect(user     = 'admin'   , 
-                                             password = 'password'  ,
+        db_connect = mysql.connector.connect(user     = 'root'   , #deafult is root
+                                             password = ''  ,
                                              host     = 'sql'    , # try either 'localhost' or 'sql'
-                                             port     = '3307'   ,
+                                             port     = ''   , #default is 3306
                                              database = 'spotify')
         return db_connect
     except Exception as err :
         try:
             db_connect = None
-            db_connect = mysql.connector.connect(user     = 'admin'      , 
-                                                 password = 'password'     ,
+            db_connect = mysql.connector.connect(user     = ''      , #deafult is root
+                                                 password = ''     ,
                                                  host     = 'localhost' , # try either 'localhost' or 'sql'
-                                                 port     = '3307'      ,
+                                                 port     = ''      ,  #default is 3306
                                                  database = 'spotify'   )
             return db_connect
         except Exception as err :

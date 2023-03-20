@@ -59,7 +59,7 @@ services:
       - ./NoSQL/configdb:/data/configdb
       - ./NoSQL/db:/data/db
     ports:
-      - 27019:27019
+      - 27019:27017   #take note for urs 
     restart: unless-stopped
     image: nosql
     environment:
