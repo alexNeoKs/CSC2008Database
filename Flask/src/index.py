@@ -21,11 +21,21 @@ try:
     @app.route("/")
     def home():
         return render_template('index.html')
+    
+    @app.route("/addSong")
+    def addSong():
+        return render_template('addSong.html')
+    
+    @app.route("/searchSQLDatabase")
+    def searchSQLDatabase():
+        return render_template('searchSQLDatabase.html')
+    
     @app.route("/sql/query", methods=["POST"])
     def sql_query():
         sql_statements = request.json['sql_statements']
         results = mySQL.query(sql_statements)
         return { 'results' : results }
+    
 except Exception as err:
     print(err)
 if __name__ == "__main__":

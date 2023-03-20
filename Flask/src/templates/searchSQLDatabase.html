@@ -1,0 +1,38 @@
+<!doctype html>
+
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+
+    <body>
+        <h3>CSC2008 Database project</h3>
+        
+        <form onSubmit="doSomething()">
+            <div>
+                <div> <span>Song Name</span> <Input id='songName' type="text" /> </div>
+                <div> <span>Artist Name</span> <Input id='artistName' type="text" /> </div>
+                <div> <span>Album Name</span> <Input id='albumName' type="text" /> </div>
+                <Button type="submit">Search</Button>
+            </div>
+        </form>
+    </body>
+
+    <script>        
+        function doSomething(e)
+        {
+            try
+            {
+                e.preventDefault()
+                const song   = document.getElementById('songName')
+                const artist = document.getElementById('artistName')
+                const album  = document.getElementById('albumName')
+                console.log( "song : " + song.value + " artist : " + artist.value + " album : " + album.value )
+            }
+            catch( err )
+            {
+                console.log( err )
+            }
+        }
+    </script>
+</html>
