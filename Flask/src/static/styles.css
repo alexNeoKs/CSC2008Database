@@ -13,6 +13,12 @@ h3
 textarea
 {
     resize: none;
-    height: 25em;
-    width: 50em;
+    width: 90vw;
+}
+
+#outputs
+{
+    resize: none;
+    height: 30em;
+    width: 98vw;
 }

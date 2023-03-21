@@ -1,38 +1,153 @@
 <!doctype html>
 
-<html>
+<html lang="en">
     <head>
+        <meta charset="utf-8" />
         <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+        <script>        
+            async function doSomething()
+            {
+                try
+                {
+                    let song      = document.getElementById('songName')
+                    let artist    = document.getElementById('artistName')
+                    let album     = document.getElementById('albumName')
+                    let outputs   = document.getElementById('outputs')
+
+                    let hasSong   = false
+                    let hasArtist = false
+                    let hasAlbum  = false
+
+                    outputs.value = ""
+                    //-------------------------------------------------
+                    if( song != null && song.value.length > 0 ) 
+                    {
+                        hasSong = true
+                    }
+                    if( artist != null && artist.value.length > 0 ) 
+                    {
+                        hasArtist = true
+                    }
+                    if( album != null && album.value.length > 0 ) 
+                    {
+                        hasAlbum = true
+                    }
+
+                    //-------------------------------------------------
+                    let sqlQuery = ""
+                    if( hasSong && hasArtist && hasAlbum )
+                    {
+                        sqlQuery = ""
+                    }
+                    else if( hasSong && hasArtist && !hasAlbum )
+                    {
+                        sqlQuery = ""
+                    }
+                    else if( hasSong && !hasArtist && hasAlbum )
+                    {
+                        sqlQuery = ""
+                    }
+                    else if( !hasSong && hasArtist && hasAlbum )
+                    {
+                        sqlQuery = ""
+                    }
+                    else if( hasSong && !hasArtist && !hasAlbum )
+                    {
+                        sqlQuery =  "SELECT " +
+                                    "song.`name`," + 
+                                    "song.`year`," + 
+                                    "song_album.`disc_number`," + 
+                                    "song_album.`track_number`," +
+                                    "album.`album`," +
+                                    "artist.`artist` " +
+                                    "FROM song " + 
+                                    "INNER JOIN song_artist ON song.`song_id`     = song_artist.`song_id` " +
+                                    "INNER JOIN artist      ON artist.`artist_id` = song_artist.`artist_id` " +
+                                    "INNER JOIN song_album  ON song.`song_id`     = song_album.`song_id` " +
+                                    "INNER JOIN album       ON album.`album_id`   = song_album.`album_id` " +
+                                    "WHERE (song.`name`) LIKE (CONCAT('%', " + String(song.value) + " ,'%')) ;"
+
+                        console.log("sqlQuery : " , sqlQuery)
+                    }
+                    else if( !hasSong && hasArtist && !hasAlbum )
+                    {
+                        sqlQuery = "CALL FindSongsAndAlbumsByArtistName('" + String(artist.value) + "');"
+                        console.log("sqlQuery : " , sqlQuery)
+                    }
+                    else if( !hasSong && !hasArtist && hasAlbum )
+                    {
+                        sqlQuery = "CALL FindSongsAndArtistsByAlbumName('" + String(album.value) + "');"
+                        console.log("sqlQuery : " , sqlQuery)
+                    }
+                    else
+                    {
+                        sqlQuery = ""
+                    }
+                    //-------------------------------------------------
+                    if( hasSong || hasArtist || hasAlbum )
+                    {
+                        const inputs = {
+                                         'sql_statements' : sqlQuery
+                                       };
+                        const request_header = {
+                                                    method  : 'POST',
+                                                    headers : {
+                                                                'Accept'       : 'application/json',
+                                                                'Content-Type' : 'application/json',
+                                                            },
+                                                    body : JSON.stringify( inputs ),
+                                               };
+
+                        outputs.value = "Searching please wait.."
+
+                        fetch( 'http://localhost:3000/sql/query' , request_header )
+                            .then(  response => response.json() )
+                            .then(  response => {
+                                                    const { results } = response
+                                                    outputs.value = results
+                                                    console.log("results" , results)
+                                                })
+                            .catch( err      => console.log(err) )
+                    }
+                    else
+                    {
+                        console.log("No inputs")
+                    }
+                    //-------------------------------------------------
+                }
+                catch( err )
+                {
+                    console.log( "Error : " , err )
+                }
+            }
+        </script>
     </head>
 
     <body>
         <h3>CSC2008 Database project</h3>
         
-        <form onSubmit="doSomething()">
+
             <div>
-                <div> <span>Song Name</span> <Input id='songName' type="text" /> </div>
-                <div> <span>Artist Name</span> <Input id='artistName' type="text" /> </div>
-                <div> <span>Album Name</span> <Input id='albumName' type="text" /> </div>
-                <Button type="submit">Search</Button>
+                <div id='inputs'> 
+                    <label for='songName'>Song Name</label> 
+                    <textarea id='songName' name='songName' wrap="soft" maxlength="255"></textarea>
+                    <hr>
+
+                    <label for='artistName'>Artist Name</label> 
+                    <textarea id='artistName' name='artistName' wrap="soft" maxlength="255"></textarea>
+                    <hr>
+
+                    <label for='albumName'>Album Name</label> 
+                    <textarea id='albumName' name='albumName' wrap="soft" maxlength="255"></textarea>
+                    <hr>
+                    <Button onClick="doSomething()">Search</Button>
+                </div>
+                <hr>
+                <textarea id='outputs'>
+                </textarea>
             </div>
-        </form>
+
     </body>
 
-    <script>        
-        function doSomething(e)
-        {
-            try
-            {
-                e.preventDefault()
-                const song   = document.getElementById('songName')
-                const artist = document.getElementById('artistName')
-                const album  = document.getElementById('albumName')
-                console.log( "song : " + song.value + " artist : " + artist.value + " album : " + album.value )
-            }
-            catch( err )
-            {
-                console.log( err )
-            }
-        }
-    </script>
 </html>

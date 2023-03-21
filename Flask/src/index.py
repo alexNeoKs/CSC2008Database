@@ -36,6 +36,7 @@ try:
         results = mySQL.query(sql_statements)
         return { 'results' : results }
     
+    
 except Exception as err:
     print(err)
 if __name__ == "__main__":
