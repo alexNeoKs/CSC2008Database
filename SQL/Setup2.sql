@@ -191,3 +191,41 @@ BEGIN
 END$
 DELIMITER ;
 
+
+DELIMITER $
+CREATE PROCEDURE spotify.FindArtistsBySongAndAlbumName( IN albumName VARCHAR(255) , IN songName VARCHAR(255) )
+BEGIN
+	SELECT 
+	b.`name`, 
+	b.`year`,
+	b.disc_number, 
+	b.track_number,
+	b.album, 
+	artist.artist 
+	FROM 
+	(
+	SELECT 
+	a.song_id, 
+	a.disc_number, 
+	a.track_number,
+	a.album,
+	song.`name`, 
+	song.`year` 
+	FROM ( SELECT 
+	song_album.`song_id`,
+	song_album.disc_number, 
+	song_album.track_number,
+	album.`album` 
+	FROM song_album 
+	INNER JOIN album 
+	ON song_album.`album_id` = album.`album_id` 
+	WHERE album.`album` LIKE (CONCAT('%', albumName ,'%')) 
+	) a INNER JOIN song 
+	ON a.`song_id` = song.`song_id` 
+	WHERE song.`name` LIKE (CONCAT('%', songName ,'%'))
+	) b INNER JOIN song_artist 
+	ON b.`song_id` = song_artist.`song_id` 
+	INNER JOIN artist 
+	ON song_artist.artist_id = artist.artist_id;
+END$
+DELIMITER ;
