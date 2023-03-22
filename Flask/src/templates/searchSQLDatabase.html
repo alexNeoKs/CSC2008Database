@@ -4,28 +4,35 @@
     <head>
         <meta charset="utf-8" />
         <link rel="icon" type="image/png" href="../assets/img/favicon.png">
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
         
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap.min.js"></script>
-        <script>        
-            async function doSomething()
+        <script>  
+            async function doSomething1()
+            {
+                console.log("Body loaded")
+                var _table = $('#dt').DataTable()
+            } 
+
+            async function doSomething2()
             {
                 try
                 {
                     let song      = document.getElementById('songName')
                     let artist    = document.getElementById('artistName')
                     let album     = document.getElementById('albumName')
-                    let outputs   = document.getElementById('outputs')
+                    let tb        = document.getElementById('tb')
 
                     let hasSong   = false
                     let hasArtist = false
                     let hasAlbum  = false
                     let inputs    = {}
 
-                    outputs.value = ""
                     //-------------------------------------------------
                     if( song != null && song.value.length > 0 ) 
                     {
@@ -94,15 +101,29 @@
                                                             },
                                                     body : JSON.stringify( inputs ),
                                                };
-                        outputs.value = "Searching please wait.."
                         try
                         {
                             fetch( 'http://localhost:3000/sql/call' , request_header )
                                             .then(  response => response.json() )
                                             .then(  response => {
                                                                     const { results } = response
-                                                                    outputs.value = results
-                                                                    console.log("results" , results)
+                                                                    tb.innerHTML = ""
+                                                                    rows = ""
+                                                                    for(count in results)
+                                                                    {
+                                                                        console.log(results[count])
+                                                                        const [song,year,disc,track,album,artist] = results[count]
+                                                                        row = `<tr>
+                                                                                <td>${song}</td>
+                                                                                <td>${year}</td>
+                                                                                <td>${disc}</td>
+                                                                                <td>${track}</td>
+                                                                                <td>${album}</td>
+                                                                                <td>${artist}</td>
+                                                                               </tr>`
+                                                                        rows += row
+                                                                    }
+                                                                    tb.innerHTML = rows
                                                                 })
                                             .catch( err      => console.log(err) )
                         }
@@ -125,9 +146,8 @@
         </script>
     </head>
 
-    <body>
+    <body onLoad="doSomething1()">
         <h3>CSC2008 Database project</h3>
-        
 
             <div>
                 <div id='inputs'> 
@@ -142,27 +162,24 @@
                     <label for='albumName'>Album Name</label> 
                     <textarea id='albumName' name='albumName' wrap="soft" maxlength="255"></textarea>
                     <hr>
-                    <Button onClick="doSomething()">Search</Button>
+                    <Button onClick="doSomething2()">Search</Button>
                 </div>
                 <hr>
-                <textarea id='outputs'>
-                </textarea>
-                <hr>
 
-                <table class='table table-striped' id='dt'>
-                    <thead>
-                        <tr>
-                            <td>Song Name</td>
-                            <td>Year</td>
-                            <td>Disc Number</td>
-                            <td>Trac Number</td>
-                            <td>Album</td>
-                            <td>Artist</td>
-                        </tr>
-                    </thead>
-                    <tbody  id='tb'>
-                    </tbody>
-                </table>
+                <div class="container mt-6 mb-6">
+                    <table class='table table-striped' id='dt'>
+                        <thead>
+                                <th>Song Name</th>
+                                <th>Year</th>
+                                <th>Disc Number</th>
+                                <th>Track Number</th>
+                                <th>Album</th>
+                                <th>Artist</th>
+                        </thead>
+                        <tbody  id='tb'>
+                        </tbody>
+                    </table>
+                </div>
 
                 <hr>
             </div>
