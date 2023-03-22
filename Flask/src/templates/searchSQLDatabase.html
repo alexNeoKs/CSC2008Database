@@ -59,7 +59,10 @@
                     }
                     else if( hasSong && !hasArtist && hasAlbum )
                     {
-                        sqlQuery = ""
+                        inputs = {
+                                    'procName' : 'FindArtistsAndAlbumsBySongName',
+                                    'args'     : ( String(album.value) , String(song.value) )
+                                 };
                     }
                     else if( !hasSong && hasArtist && hasAlbum )
                     {
