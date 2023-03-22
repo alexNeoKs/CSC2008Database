@@ -3,8 +3,13 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
         <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap.min.css">
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap.min.js"></script>
         <script>        
             async function doSomething()
             {
@@ -18,6 +23,7 @@
                     let hasSong   = false
                     let hasArtist = false
                     let hasAlbum  = false
+                    let inputs    = {}
 
                     outputs.value = ""
                     //-------------------------------------------------
@@ -54,31 +60,24 @@
                     }
                     else if( hasSong && !hasArtist && !hasAlbum )
                     {
-                        sqlQuery =  "SELECT " +
-                                    "song.`name`," + 
-                                    "song.`year`," + 
-                                    "song_album.`disc_number`," + 
-                                    "song_album.`track_number`," +
-                                    "album.`album`," +
-                                    "artist.`artist` " +
-                                    "FROM song " + 
-                                    "INNER JOIN song_artist ON song.`song_id`     = song_artist.`song_id` " +
-                                    "INNER JOIN artist      ON artist.`artist_id` = song_artist.`artist_id` " +
-                                    "INNER JOIN song_album  ON song.`song_id`     = song_album.`song_id` " +
-                                    "INNER JOIN album       ON album.`album_id`   = song_album.`album_id` " +
-                                    "WHERE (song.`name`) LIKE (CONCAT('%', " + String(song.value) + " ,'%')) ;"
-
-                        console.log("sqlQuery : " , sqlQuery)
+                        inputs = {
+                                    'procName' : 'FindArtistsAndAlbumsBySongName',
+                                    'args'     : String(song.value)
+                                 };
                     }
                     else if( !hasSong && hasArtist && !hasAlbum )
                     {
-                        sqlQuery = "CALL FindSongsAndAlbumsByArtistName('" + String(artist.value) + "');"
-                        console.log("sqlQuery : " , sqlQuery)
+                        inputs = {
+                                   'procName' : 'FindSongsAndAlbumsByArtistName',
+                                   'args'     : String(artist.value),
+                                 };
                     }
                     else if( !hasSong && !hasArtist && hasAlbum )
                     {
-                        sqlQuery = "CALL FindSongsAndArtistsByAlbumName('" + String(album.value) + "');"
-                        console.log("sqlQuery : " , sqlQuery)
+                        inputs = {
+                                   'procName' : 'FindSongsAndArtistsByAlbumName',
+                                   'args'     : String(album.value),
+                                 };
                     }
                     else
                     {
@@ -87,9 +86,6 @@
                     //-------------------------------------------------
                     if( hasSong || hasArtist || hasAlbum )
                     {
-                        const inputs = {
-                                         'sql_statements' : sqlQuery
-                                       };
                         const request_header = {
                                                     method  : 'POST',
                                                     headers : {
@@ -98,17 +94,22 @@
                                                             },
                                                     body : JSON.stringify( inputs ),
                                                };
-
                         outputs.value = "Searching please wait.."
-
-                        fetch( 'http://localhost:3000/sql/query' , request_header )
-                            .then(  response => response.json() )
-                            .then(  response => {
-                                                    const { results } = response
-                                                    outputs.value = results
-                                                    console.log("results" , results)
-                                                })
-                            .catch( err      => console.log(err) )
+                        try
+                        {
+                            fetch( 'http://localhost:3000/sql/call' , request_header )
+                                            .then(  response => response.json() )
+                                            .then(  response => {
+                                                                    const { results } = response
+                                                                    outputs.value = results
+                                                                    console.log("results" , results)
+                                                                })
+                                            .catch( err      => console.log(err) )
+                        }
+                        catch( err )
+                        {
+                            console.log( err )
+                        }
                     }
                     else
                     {
@@ -146,6 +147,24 @@
                 <hr>
                 <textarea id='outputs'>
                 </textarea>
+                <hr>
+
+                <table class='table table-striped' id='dt'>
+                    <thead>
+                        <tr>
+                            <td>Song Name</td>
+                            <td>Year</td>
+                            <td>Disc Number</td>
+                            <td>Trac Number</td>
+                            <td>Album</td>
+                            <td>Artist</td>
+                        </tr>
+                    </thead>
+                    <tbody  id='tb'>
+                    </tbody>
+                </table>
+
+                <hr>
             </div>
 
     </body>

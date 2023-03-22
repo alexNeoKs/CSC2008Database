@@ -30,6 +30,17 @@ try:
     def searchSQLDatabase():
         return render_template('searchSQLDatabase.html')
     
+    # use this API to call MySQL stored procedure
+    @app.route("/sql/call", methods=["POST"])
+    def sql_call():
+        procName = request.json['procName']
+        args = request.json['args']
+        results = mySQL.call( procName, args )
+        return { 'results' : results }
+    
+    # FOR DEVELOPMENT / TESTING USE ONLY , 
+    # use this API to pass SQL queries directly into MySQL 
+    # do not use in production to avoid SQL injection!)
     @app.route("/sql/query", methods=["POST"])
     def sql_query():
         sql_statements = request.json['sql_statements']

@@ -21,7 +21,8 @@ class MySQL:
             self.db_connect.close()
             self.db_connect = None
             print("MySQL Destroyed") 
-    def query(self,sql_statements):
+
+    def query( self , sql_statements ):
         try:
             self.db_cursor.execute(sql_statements)
             colnames = self.db_cursor.column_names
@@ -29,5 +30,19 @@ class MySQL:
             print(colnames)
             print(results)
             return(results)
-        except:
-            print("Invalid sql statements")
+        except Exception as e:
+            print( e )
+
+    def call( self , procName , args ):
+        try:
+            print(procName , args)
+            self.db_cursor.callproc( procName ,  (args,) )
+            results = self.db_cursor.stored_results()
+            outputs = []
+            for result in results:
+                output = result.fetchall()
+                print(output)
+                outputs.extend(output)
+            return(outputs)
+        except Exception as e:
+             print( e )
