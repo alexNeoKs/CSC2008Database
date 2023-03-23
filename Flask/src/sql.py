@@ -33,6 +33,10 @@ class MySQL:
         except Exception as e:
             print( e )
 
+    def dbCursor( self  ):
+        return(self.db_cursor)
+  
+
     def call( self , procName , args ):
         try:
             print(procName , args)

@@ -1,7 +1,7 @@
 import os
 import numpy  as np
 import pandas as pd
-from   flask  import Flask, render_template, jsonify, request
+from   flask  import Flask, render_template, jsonify, request, redirect,url_for
 from   sql    import MySQL
 from   nosql  import MongoDB
 try:
@@ -19,6 +19,27 @@ try:
     app  = Flask( __name__ )
 
     @app.route("/")
+    def index():
+        return redirect(url_for('login'))
+    
+    @app.route("/login", methods = ['GET','POST'])
+    def login():
+        if request.method == 'GET':
+            return render_template('login.html')
+        elif request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+            mySQL.dbCursor().execute("SELECT * FROM accounts WHERE username = %s AND password = %s", (username, password))
+            account = mySQL.dbCursor().fetchone()
+            if account:
+                return redirect(url_for('home'))
+
+            else:
+                pass
+
+        return render_template('login.html')
+    
+    @app.route("/home")
     def home():
         return render_template('index.html')
     
