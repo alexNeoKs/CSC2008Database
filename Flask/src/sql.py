@@ -7,7 +7,8 @@ class MySQL:
             self.db_connect = None
             self.db_connect = mysql.connector.connect(user     = 'root'  , 
                                                       password = 'admin' ,
-                                                      host     = 'sql'   ,
+                                                      host     = 'csc2008.tplinkdns.com' ,
+                                                      port     = '3307',
                                                       database = 'spotify')
             if self.db_connect.is_connected():
                 self.db_cursor = self.db_connect.cursor()
@@ -35,6 +36,9 @@ class MySQL:
 
     def dbCursor( self  ):
         return(self.db_cursor)
+    
+    def dbCommit(self):
+        return(self.db_connect.commit())
   
 
     def call( self , procName , args ):
