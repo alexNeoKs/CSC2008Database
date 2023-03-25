@@ -22,7 +22,7 @@
 
                 _DataTable = $('#dt').DataTable({
                                                 "columns": [
-                                                    { "data": "song"         , "title": "Song Name"    },
+                                                    { "data": "name"         , "title": "Song Name"    },
                                                     { "data": "year"         , "title": "Year"         },
                                                     { "data": "disc"         , "title": "Disc Number"  },
                                                     { "data": "track"        , "title": "Track Number" },
@@ -34,6 +34,10 @@
 
             async function doSomething2()
             {
+                _DataTable.clear().draw();
+                tb.innerHTML = ""
+                tb.innerHTML = "Please wait"
+
                 try
                 {
                     var _table    = $('#dt').DataTable()
@@ -73,9 +77,9 @@
                     }
                     else if( hasSong && !hasArtist && hasAlbum )
                     {
-                        inputs = {
+                        inputs = {                
                                     'procName' : 'FindArtistsBySongAndAlbumName',
-                                    'args'     : ( String(album.value) , String(song.value) )
+                                    'args'     :  ( String(album.value) , String(song.value) )
                                  };
                     }
                     else if( !hasSong && hasArtist && hasAlbum )
@@ -127,12 +131,14 @@
                                                                     tb.innerHTML = ""
                                                                     rows = ""
                                                                     collection = []
-                                                                    for(count in results)
-                                                                    {
-                                                                        console.log(results[count])
-                                                                        const [song,year,disc,track,album,artist] = results[count]
-                                                                        row = `<tr>
-                                                                                <td>${song}</td>
+                                                                    results.map( record => {
+                                                                        const doc = JSON.parse( record[0] )
+
+                                                                        collection.push(doc)
+                                                                        const { name , year , disc , track , album , artist } = doc
+
+                                                                        const row = `<tr>
+                                                                                <td>${name}</td>
                                                                                 <td>${year}</td>
                                                                                 <td>${disc}</td>
                                                                                 <td>${track}</td>
@@ -140,16 +146,8 @@
                                                                                 <td>${artist}</td>
                                                                                </tr>`
                                                                         rows += row
-                                                                        const doc = {
-                                                                                        'song'   : song   ,
-                                                                                        'year'   : year   ,
-                                                                                        'disc'   : disc   ,
-                                                                                        'track'  : track  ,
-                                                                                        'album'  : album  ,
-                                                                                        'artist' : artist
-                                                                                    }
-                                                                        collection.push(doc)
-                                                                    }
+                                                                        //console.log( "record : " , name , year , disc , track , album , artist )
+                                                                    })
                                                                     tb.innerHTML = rows
                                                                     _DataTable.clear().draw();
                                                                     _DataTable.rows.add(collection).draw();
@@ -198,12 +196,12 @@
                 <div class="container mt-6 mb-6">
                     <table class='table table-striped' id='dt'>
                         <thead>
-                                <th>Song Name</th>
-                                <th>Year</th>
-                                <th>Disc Number</th>
-                                <th>Track Number</th>
-                                <th>Album</th>
-                                <th>Artist</th>
+                                <th>song</th>
+                                <th>year</th>
+                                <th>disc</th>
+                                <th>track</th>
+                                <th>album</th>
+                                <th>artist</th>
                         </thead>
                         <tbody  id='tb'>
                         </tbody>

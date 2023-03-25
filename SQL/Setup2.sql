@@ -128,16 +128,151 @@ ALTER TABLE song_album ADD INDEX album  ( album_id );
 ALTER TABLE song   ADD INDEX song_name ( `name` );
 ALTER TABLE album  ADD INDEX album_name ( album );
 
+CREATE TABLE IF NOT EXISTS accounts(
+	username VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+	PRIMARY KEY(username)
+);
+
+INSERT INTO accounts VALUES ('root','password');
+
+
+-- DELIMITER $
+-- CREATE PROCEDURE spotify.FindSongsAndAlbumsByArtistName( IN artistName VARCHAR(255) )
+-- BEGIN
+-- 	SELECT 
+-- 	song.`name`,
+-- 	song.`year`,
+-- 	song_album.`disc_number`,
+-- 	song_album.`track_number`,
+-- 	album.`album`,
+--     a.`artist` 
+-- 	FROM 
+-- 	( SELECT artist.`artist`, song_artist.`song_id` 
+-- 	  FROM       artist 
+-- 	  INNER JOIN song_artist ON artist.`artist_id` = song_artist.`artist_id` 
+-- 	  WHERE (artist.`artist`) LIKE (CONCAT('%', artistName ,'%')) ) a 
+-- 	  INNER JOIN song       ON a.`song_id`      = song.`song_id` 
+-- 	  INNER JOIN song_album ON a.`song_id`      = song_album.`song_id`
+-- 	  INNER JOIN album      ON album.`album_id` = song_album.`album_id`
+-- 	  ORDER BY a.`artist`, song.`year` DESC, album.`album` , song_album.`disc_number`, song_album.`track_number`;
+-- END$
+-- DELIMITER ;
+
+-- DELIMITER $
+-- CREATE PROCEDURE spotify.FindSongsAndArtistsByAlbumName( IN albumName VARCHAR(255) )
+-- BEGIN
+-- 	SELECT  
+-- 	song.`name`,
+-- 	song.`year`,
+-- 	a.`disc_number`,
+-- 	a.`track_number`,
+-- 	a.`album`,
+-- 	artist.`artist` 
+-- 	FROM 
+-- 	( SELECT  album.`album`, song_album.`song_id`,song_album.`disc_number`,song_album.`track_number`
+-- 	FROM album 
+-- 	INNER JOIN song_album ON album.`album_id` = song_album.`album_id`
+-- 	WHERE (album.`album`) LIKE (CONCAT('%', albumName ,'%')) ) a
+-- 	INNER JOIN song        ON a.`song_id`       = song.`song_id` 
+-- 	INNER JOIN song_artist ON a.`song_id`       = song_artist.`song_id`
+-- 	INNER JOIN artist      ON artist.`artist_id`= song_artist.`artist_id`
+-- 	ORDER BY a.`album`, artist.`artist`, song.`year` DESC,  a.`disc_number`, a.`track_number`;
+-- END$
+-- DELIMITER ;
+
+-- DELIMITER $
+-- CREATE PROCEDURE spotify.FindArtistsAndAlbumsBySongName( IN songName VARCHAR(255) )
+-- BEGIN
+-- 	SELECT 
+-- 	song.`name`,
+-- 	song.`year`,
+-- 	song_album.`disc_number` ,
+-- 	song_album.`track_number`,
+-- 	album.`album`,
+-- 	artist.`artist` 
+-- 	FROM song 
+-- 	INNER JOIN song_artist ON song.`song_id`     = song_artist.`song_id` 
+-- 	INNER JOIN artist      ON artist.`artist_id` = song_artist.`artist_id`
+-- 	INNER JOIN song_album  ON song.`song_id`     = song_album.`song_id` 
+-- 	INNER JOIN album       ON album.`album_id`   = song_album.`album_id` 
+-- 	WHERE (song.`name`) LIKE (CONCAT('%', songName ,'%')) ;
+-- END$
+-- DELIMITER ;
+
+-- DELIMITER $
+-- CREATE PROCEDURE spotify.FindArtistsBySongAndAlbumName( IN albumName VARCHAR(255) , IN songName VARCHAR(255) )
+-- BEGIN
+-- 	SELECT 
+-- 	b.`name`, 
+-- 	b.`year`,
+-- 	b.disc_number, 
+-- 	b.track_number,
+-- 	b.album, 
+-- 	artist.artist 
+-- 	FROM 
+-- 	(
+-- 	SELECT 
+-- 	a.song_id, 
+-- 	a.disc_number, 
+-- 	a.track_number,
+-- 	a.album,
+-- 	song.`name`, 
+-- 	song.`year` 
+-- 	FROM ( SELECT 
+-- 	song_album.`song_id`,
+-- 	song_album.disc_number, 
+-- 	song_album.track_number,
+-- 	album.`album` 
+-- 	FROM song_album 
+-- 	INNER JOIN album 
+-- 	ON song_album.`album_id` = album.`album_id` 
+-- 	WHERE album.`album` LIKE (CONCAT('%', albumName ,'%')) 
+-- 	) a INNER JOIN song 
+-- 	ON a.`song_id` = song.`song_id` 
+-- 	WHERE song.`name` LIKE (CONCAT('%', songName ,'%'))
+-- 	) b INNER JOIN song_artist 
+-- 	ON b.`song_id` = song_artist.`song_id` 
+-- 	INNER JOIN artist 
+-- 	ON song_artist.artist_id = artist.artist_id;
+-- END$
+-- DELIMITER ;
+
+
+
+DELIMITER $
+CREATE PROCEDURE spotify.FindArtistsAndAlbumsBySongName( IN songName VARCHAR(255) )
+BEGIN
+	SELECT 
+    JSON_OBJECT( 
+    'name' , song.`name` , 
+    'year' , song.`year` , 
+    'disc' , song_album.`disc_number` , 
+    'track' , song_album.`track_number` , 
+    'album' , album.`album` , 
+    'artist' , artist.`artist` 
+    ) AS `record` 
+	FROM song 
+	INNER JOIN song_artist ON song.`song_id`     = song_artist.`song_id` 
+	INNER JOIN artist      ON artist.`artist_id` = song_artist.`artist_id`
+	INNER JOIN song_album  ON song.`song_id`     = song_album.`song_id` 
+	INNER JOIN album       ON album.`album_id`   = song_album.`album_id` 
+	WHERE (song.`name`) LIKE (CONCAT('%', songName ,'%')) ;
+END$
+DELIMITER ;
+
 DELIMITER $
 CREATE PROCEDURE spotify.FindSongsAndAlbumsByArtistName( IN artistName VARCHAR(255) )
 BEGIN
 	SELECT 
-	song.`name`,
-	song.`year`,
-	song_album.`disc_number`,
-	song_album.`track_number`,
-	album.`album`,
-    a.`artist` 
+     JSON_OBJECT(  
+	'name' , song.`name`,
+	'year' , song.`year`,
+	'disc' , song_album.`disc_number`,
+	'track' , song_album.`track_number`,
+	'album' , album.`album`,
+    'artist' , a.`artist` 
+    ) AS `record` 
 	FROM 
 	( SELECT artist.`artist`, song_artist.`song_id` 
 	  FROM       artist 
@@ -154,12 +289,14 @@ DELIMITER $
 CREATE PROCEDURE spotify.FindSongsAndArtistsByAlbumName( IN albumName VARCHAR(255) )
 BEGIN
 	SELECT  
-	song.`name`,
-	song.`year`,
-	a.`disc_number`,
-	a.`track_number`,
-	a.`album`,
-	artist.`artist` 
+    JSON_OBJECT(  
+	'name' , song.`name`,
+	'year' , song.`year`,
+	'disc' , a.`disc_number`,
+	'track' , a.`track_number`,
+	'album' , a.`album`,
+	'artist' , artist.`artist` 
+    ) AS `record` 
 	FROM 
 	( SELECT  album.`album`, song_album.`song_id`,song_album.`disc_number`,song_album.`track_number`
 	FROM album 
@@ -173,35 +310,17 @@ END$
 DELIMITER ;
 
 DELIMITER $
-CREATE PROCEDURE spotify.FindArtistsAndAlbumsBySongName( IN songName VARCHAR(255) )
-BEGIN
-	SELECT 
-	song.`name`,
-	song.`year`,
-	song_album.`disc_number` ,
-	song_album.`track_number`,
-	album.`album`,
-	artist.`artist` 
-	FROM song 
-	INNER JOIN song_artist ON song.`song_id`     = song_artist.`song_id` 
-	INNER JOIN artist      ON artist.`artist_id` = song_artist.`artist_id`
-	INNER JOIN song_album  ON song.`song_id`     = song_album.`song_id` 
-	INNER JOIN album       ON album.`album_id`   = song_album.`album_id` 
-	WHERE (song.`name`) LIKE (CONCAT('%', songName ,'%')) ;
-END$
-DELIMITER ;
-
-
-DELIMITER $
 CREATE PROCEDURE spotify.FindArtistsBySongAndAlbumName( IN albumName VARCHAR(255) , IN songName VARCHAR(255) )
 BEGIN
 	SELECT 
-	b.`name`, 
-	b.`year`,
-	b.disc_number, 
-	b.track_number,
-	b.album, 
-	artist.artist 
+    JSON_OBJECT(  
+	'name' , b.`name`, 
+	'year' , b.`year`,
+	'disc' , b.disc_number, 
+	'track' , b.track_number,
+	'album' , b.album, 
+	'artist' , artist.artist 
+    ) AS `record` 
 	FROM 
 	(
 	SELECT 
@@ -230,10 +349,3 @@ BEGIN
 END$
 DELIMITER ;
 
-CREATE TABLE IF NOT EXISTS accounts(
-	username VARCHAR(100) NOT NULL,
-    password VARCHAR(100) NOT NULL,
-	PRIMARY KEY(username)
-);
-
-INSERT INTO accounts VALUES ('root','password');
