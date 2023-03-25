@@ -39,6 +39,25 @@ try:
 
         return render_template('login.html')
     
+    @app.route("/signup", methods = ['GET','POST'])
+    def signup():
+        if request.method == 'GET':
+            return render_template('signup.html')
+        elif request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+            password_repeat = request.form['password-repeat']
+            if(password == password_repeat):
+                print("Reach")
+                mySQL.dbCursor().execute("INSERT INTO accounts (username,password) VALUES (%s,%s)", (username, password))
+                mySQL.dbCommit()
+                return redirect(url_for('login'))
+            else:
+                print("Reach no")
+                return render_template('signup.html')
+
+        return render_template('signup.html')
+    
     @app.route("/home")
     def home():
         return render_template('index.html')
