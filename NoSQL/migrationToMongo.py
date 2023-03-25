@@ -8,7 +8,7 @@ def connectMySQL():
         db_connect = mysql.connector.connect(user     = 'admin'   , #deafult is root
                                              password = 'password'  ,
                                              host     = 'sql'    , # try either 'localhost' or 'sql'
-                                             port     = '3307'   , #default is 3306
+                                             port     = '3306'   , #default is 3306
                                              database = 'spotify')
         return db_connect
     except Exception as err :
@@ -17,7 +17,7 @@ def connectMySQL():
             db_connect = mysql.connector.connect(user     = 'admin'      , #deafult is root
                                                  password = 'password'     ,
                                                  host     = 'localhost' , # try either 'localhost' or 'sql'
-                                                 port     = '3307'      ,  #default is 3306
+                                                 port     = '3306'      ,  #default is 3306
                                                  database = 'spotify'   )
             return db_connect
         except Exception as err :
