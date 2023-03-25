@@ -229,3 +229,11 @@ BEGIN
 	ON song_artist.artist_id = artist.artist_id;
 END$
 DELIMITER ;
+
+CREATE TABLE IF NOT EXISTS accounts(
+	username VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+	PRIMARY KEY(username)
+);
+
+INSERT INTO accounts VALUES ('root','password');

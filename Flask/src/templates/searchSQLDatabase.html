@@ -13,16 +13,30 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap.min.js"></script>
         <script>  
+
+            var _DataTable;
+            
             async function doSomething1()
             {
                 console.log("Body loaded")
-                var _table = $('#dt').DataTable()
-            } 
+
+                _DataTable = $('#dt').DataTable({
+                                                "columns": [
+                                                    { "data": "song"         , "title": "Song Name"    },
+                                                    { "data": "year"         , "title": "Year"         },
+                                                    { "data": "disc"         , "title": "Disc Number"  },
+                                                    { "data": "track"        , "title": "Track Number" },
+                                                    { "data": "album"        , "title": "Album"        },
+                                                    { "data": "artist"       , "title": "Artist"       }
+                                                ]
+                                             });
+                                           }
 
             async function doSomething2()
             {
                 try
                 {
+                    var _table    = $('#dt').DataTable()
                     let song      = document.getElementById('songName')
                     let artist    = document.getElementById('artistName')
                     let album     = document.getElementById('albumName')
@@ -112,6 +126,7 @@
                                                                     const { results } = response
                                                                     tb.innerHTML = ""
                                                                     rows = ""
+                                                                    collection = []
                                                                     for(count in results)
                                                                     {
                                                                         console.log(results[count])
@@ -125,8 +140,19 @@
                                                                                 <td>${artist}</td>
                                                                                </tr>`
                                                                         rows += row
+                                                                        const doc = {
+                                                                                        'song'   : song   ,
+                                                                                        'year'   : year   ,
+                                                                                        'disc'   : disc   ,
+                                                                                        'track'  : track  ,
+                                                                                        'album'  : album  ,
+                                                                                        'artist' : artist
+                                                                                    }
+                                                                        collection.push(doc)
                                                                     }
                                                                     tb.innerHTML = rows
+                                                                    _DataTable.clear().draw();
+                                                                    _DataTable.rows.add(collection).draw();
                                                                 })
                                             .catch( err      => console.log(err) )
                         }
