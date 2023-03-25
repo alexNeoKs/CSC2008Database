@@ -43,10 +43,39 @@ class MySQL:
         return(self.db_connect.commit())
   
 
-    def call( self , procName , args ):
+    def call1( self , procName , arg1 ):
         try:
-            print(procName , args)
-            self.db_cursor.callproc( procName ,  (args,) )
+            print(procName , arg1)
+            self.db_cursor.callproc( procName ,  (arg1,) )
+            results = self.db_cursor.stored_results()
+            outputs = []
+            for result in results:
+                output = result.fetchall()
+                print(output)
+                outputs.extend(output)
+            return(outputs)
+        except Exception as e:
+             print( e )
+
+
+    def call2( self , procName , arg1 , arg2 ):
+        try:
+            print(procName ,  arg1 , arg2)
+            self.db_cursor.callproc( procName ,  (arg1,arg2,) )
+            results = self.db_cursor.stored_results()
+            outputs = []
+            for result in results:
+                output = result.fetchall()
+                print(output)
+                outputs.extend(output)
+            return(outputs)
+        except Exception as e:
+             print( e )
+
+    def call3( self , procName , arg1 , arg2 , arg3 ):
+        try:
+            print(procName ,  arg1 , arg2 , arg3)
+            self.db_cursor.callproc( procName ,  (arg1,arg2,arg3,) )
             results = self.db_cursor.stored_results()
             outputs = []
             for result in results:

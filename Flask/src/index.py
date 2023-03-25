@@ -73,12 +73,19 @@ try:
     # use this API to call MySQL stored procedure
     @app.route("/sql/call", methods=["POST"])
     def sql_call():
-        if "args" in request.json and "procName" in request.json:
+        if "arg2" in request.json and "arg1" in request.json and "procName" in request.json:
             procName = request.json['procName']
-            args     = request.json['args']
-            print( type(args) )
-            results  = mySQL.call( procName, args )
+            arg1     = request.json['arg1']
+            arg2     = request.json['arg2']
+            results  = mySQL.call2( procName, arg1 , arg2 )
             return { 'results' : results }
+        elif "arg1" in request.json and "procName" in request.json:
+            procName = request.json['procName']
+            arg1     = request.json['arg1']
+            results  = mySQL.call1( procName, arg1 )
+            return { 'results' : results }
+        else:
+            return { 'results' : "" }
 
     
     # FOR DEVELOPMENT / TESTING USE ONLY , 

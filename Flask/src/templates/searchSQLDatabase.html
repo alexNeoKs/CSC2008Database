@@ -79,7 +79,8 @@
                     {
                         inputs = {                
                                     'procName' : 'FindArtistsBySongAndAlbumName',
-                                    'args'     :  ( String(album.value) , String(song.value) )
+                                    'arg1'     :  String(album.value),
+                                    'arg2'     :  String(song.value) 
                                  };
                     }
                     else if( !hasSong && hasArtist && hasAlbum )
@@ -90,21 +91,21 @@
                     {
                         inputs = {
                                     'procName' : 'FindArtistsAndAlbumsBySongName',
-                                    'args'     : String(song.value)
+                                    'arg1'     : String(song.value)
                                  };
                     }
                     else if( !hasSong && hasArtist && !hasAlbum )
                     {
                         inputs = {
                                    'procName' : 'FindSongsAndAlbumsByArtistName',
-                                   'args'     : String(artist.value),
+                                   'arg1'     : String(artist.value),
                                  };
                     }
                     else if( !hasSong && !hasArtist && hasAlbum )
                     {
                         inputs = {
                                    'procName' : 'FindSongsAndArtistsByAlbumName',
-                                   'args'     : String(album.value),
+                                   'arg1'     : String(album.value),
                                  };
                     }
                     else
