@@ -238,26 +238,26 @@ INSERT INTO accounts VALUES ('root','password');
 -- END$
 -- DELIMITER ;
 
-
-
 DELIMITER $
 CREATE PROCEDURE spotify.FindArtistsAndAlbumsBySongName( IN songName VARCHAR(255) )
 BEGIN
 	SELECT 
+    DISTINCT 
     JSON_OBJECT( 
     'name' , song.`name` , 
     'year' , song.`year` , 
     'disc' , song_album.`disc_number` , 
     'track' , song_album.`track_number` , 
     'album' , album.`album` , 
-    'artist' , artist.`artist` 
+    'artist' , group_concat(artist.`artist`)
     ) AS `record` 
 	FROM song 
 	INNER JOIN song_artist ON song.`song_id`     = song_artist.`song_id` 
 	INNER JOIN artist      ON artist.`artist_id` = song_artist.`artist_id`
 	INNER JOIN song_album  ON song.`song_id`     = song_album.`song_id` 
 	INNER JOIN album       ON album.`album_id`   = song_album.`album_id` 
-	WHERE (song.`name`) LIKE (CONCAT('%', songName ,'%')) ;
+	WHERE (song.`name`) LIKE (CONCAT('%', songName ,'%')) 
+    GROUP BY song.`song_id`;
 END$
 DELIMITER ;
 
@@ -265,13 +265,14 @@ DELIMITER $
 CREATE PROCEDURE spotify.FindSongsAndAlbumsByArtistName( IN artistName VARCHAR(255) )
 BEGIN
 	SELECT 
+    DISTINCT 
      JSON_OBJECT(  
 	'name' , song.`name`,
 	'year' , song.`year`,
 	'disc' , song_album.`disc_number`,
 	'track' , song_album.`track_number`,
 	'album' , album.`album`,
-    'artist' , a.`artist` 
+    'artist' , group_concat(a.`artist`) 
     ) AS `record` 
 	FROM 
 	( SELECT artist.`artist`, song_artist.`song_id` 
@@ -280,8 +281,8 @@ BEGIN
 	  WHERE (artist.`artist`) LIKE (CONCAT('%', artistName ,'%')) ) a 
 	  INNER JOIN song       ON a.`song_id`      = song.`song_id` 
 	  INNER JOIN song_album ON a.`song_id`      = song_album.`song_id`
-	  INNER JOIN album      ON album.`album_id` = song_album.`album_id`
-	  ORDER BY a.`artist`, song.`year` DESC, album.`album` , song_album.`disc_number`, song_album.`track_number`;
+	  INNER JOIN album      ON album.`album_id` = song_album.`album_id` 
+      GROUP BY a.`song_id`;
 END$
 DELIMITER ;
 
@@ -289,13 +290,14 @@ DELIMITER $
 CREATE PROCEDURE spotify.FindSongsAndArtistsByAlbumName( IN albumName VARCHAR(255) )
 BEGIN
 	SELECT  
+    DISTINCT 
     JSON_OBJECT(  
 	'name' , song.`name`,
 	'year' , song.`year`,
 	'disc' , a.`disc_number`,
 	'track' , a.`track_number`,
 	'album' , a.`album`,
-	'artist' , artist.`artist` 
+	'artist' , group_concat(artist.`artist`) 
     ) AS `record` 
 	FROM 
 	( SELECT  album.`album`, song_album.`song_id`,song_album.`disc_number`,song_album.`track_number`
@@ -305,36 +307,27 @@ BEGIN
 	INNER JOIN song        ON a.`song_id`       = song.`song_id` 
 	INNER JOIN song_artist ON a.`song_id`       = song_artist.`song_id`
 	INNER JOIN artist      ON artist.`artist_id`= song_artist.`artist_id`
-	ORDER BY a.`album`, artist.`artist`, song.`year` DESC,  a.`disc_number`, a.`track_number`;
+    GROUP BY a.`song_id`;
 END$
 DELIMITER ;
+
 
 DELIMITER $
 CREATE PROCEDURE spotify.FindArtistsBySongAndAlbumName( IN albumName VARCHAR(255) , IN songName VARCHAR(255) )
 BEGIN
 	SELECT 
+    DISTINCT 
     JSON_OBJECT(  
 	'name' , b.`name`, 
 	'year' , b.`year`,
 	'disc' , b.disc_number, 
 	'track' , b.track_number,
 	'album' , b.album, 
-	'artist' , artist.artist 
+	'artist' , group_concat(artist.artist) 
     ) AS `record` 
 	FROM 
-	(
-	SELECT 
-	a.song_id, 
-	a.disc_number, 
-	a.track_number,
-	a.album,
-	song.`name`, 
-	song.`year` 
-	FROM ( SELECT 
-	song_album.`song_id`,
-	song_album.disc_number, 
-	song_album.track_number,
-	album.`album` 
+	(      SELECT           a.song_id,           a.disc_number,          a.track_number,      a.album, song.`name`, song.`year` 
+	FROM ( SELECT song_album.`song_id`, song_album.disc_number, song_album.track_number, album.`album` 
 	FROM song_album 
 	INNER JOIN album 
 	ON song_album.`album_id` = album.`album_id` 
@@ -345,7 +338,8 @@ BEGIN
 	) b INNER JOIN song_artist 
 	ON b.`song_id` = song_artist.`song_id` 
 	INNER JOIN artist 
-	ON song_artist.artist_id = artist.artist_id;
+	ON song_artist.artist_id = artist.artist_id
+    GROUP BY b.song_id;
 END$
 DELIMITER ;
 
