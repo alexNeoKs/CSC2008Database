@@ -1,6 +1,6 @@
-# CSC2008Database 
+# CSC2008 Database 
 
-##Docker Setup: 
+## Docker Setup: 
 (1) Download and install the latest Docker Desktop for Windows 
 (2) Clone the github repository from https://github.com/alexNeoKs/CSC2008Database.git 
 (3) Execute the windows batch file “Untrack_README_txt.bat” found in the root directory of our repository 
