@@ -20,9 +20,15 @@ class MongoDB:
 
 
     def FindArtistsAndAlbumsBySongName(self,songName):
-        results = self.mongoCollection.find( { 'name' : { '$regex' : '/'+songName+'/i' } } )
+        query =  songName 
+        results = self.mongoCollection.find( { 'name' : { '$regex' :  query } } )
+        counter = 0
         for result in results:
-            print(result , " : ", results[result])
+            counter += 1
+            for field in result:
+                print( field , "" , result[field] )
+        print(counter , " record(s) found!")
+        return results
 
 
     def test(self):
