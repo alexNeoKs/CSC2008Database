@@ -27,12 +27,12 @@ def connectMySQL():
 def connectMongo():
     try:
         db_connect = None
-        db_connect = pymongo.MongoClient("mongodb://admin:password@127.0.0.1:27019/?authMechanism=DEFAULT")
+        db_connect = pymongo.MongoClient("mongodb://admin:password@127.0.0.1:27017/?authMechanism=DEFAULT")
         return db_connect
     except Exception as err :
         try:
             db_connect = None
-            db_connect = pymongo.MongoClient("mongodb://admin:password@localhost:27019/?authMechanism=DEFAULT")
+            db_connect = pymongo.MongoClient("mongodb://admin:password@localhost:27017/?authMechanism=DEFAULT")
             return db_connect
         except Exception as err :
             print( err )

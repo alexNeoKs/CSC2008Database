@@ -16,6 +16,8 @@ services:
     depends_on:
       sql:
         condition: service_healthy
+      # nosql:
+      #   condition: service_healthy
     environment:
       WAIT_HOSTS: sql:3306 , nosql:27019
     networks:
@@ -59,18 +61,20 @@ services:
       - ./NoSQL/configdb:/data/configdb
       - ./NoSQL/db:/data/db
     ports:
-      - 27019:27017   #take note for urs 
+      - 27017:27017   #take note for urs 
     restart: unless-stopped
     image: nosql
+    hostname: nosql
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: spotify
       SERVICE_NAME: nosql
     networks:
       - localnet
     # command: mongod --port 27017 --bind_ip 0.0.0.0
     # healthcheck:
-    #   test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+    #   test: echo 'db.runCommand("ping").ok' | mongosh nosql:27017/test --quiet
     #   interval: 1s
     #   retries: 120
 

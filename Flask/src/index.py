@@ -1,7 +1,7 @@
 import os
 import numpy  as np
 import pandas as pd
-import time
+import datetime
 from   flask  import Flask, render_template, jsonify, request, redirect,url_for
 from   sql    import MySQL
 from   nosql  import MongoDB
@@ -79,18 +79,64 @@ try:
             procName = request.json['procName']
             arg1     = request.json['arg1']
             arg2     = request.json['arg2']
+            startTime = datetime.datetime.now()
             results  = mySQL.call2( procName, arg1 , arg2 )
-            return { 'results' : results }
+            endTime = datetime.datetime.now()
+            deltaTime = endTime - startTime
+            ms        = int(deltaTime.total_seconds() * 1000)
+            return { 'results' : results , 'elapsed' : ms }
         elif "arg1" in request.json and "procName" in request.json:
             procName = request.json['procName']
             arg1     = request.json['arg1']
+            startTime = datetime.datetime.now()
             results  = mySQL.call1( procName, arg1 )
-
-            return { 'results' : results }
+            endTime = datetime.datetime.now()
+            deltaTime = endTime - startTime
+            ms        = int(deltaTime.total_seconds() * 1000)
+            return { 'results' : results , 'elapsed' : ms }
         else:
-            return { 'results' : "" }
+            return { 'results' : "" , 'elapsed' : 0 }
 
-    
+
+    @app.route("/nosql/call", methods=["POST"])
+    def nosql_call():
+        if "arg2" in request.json and "arg1" in request.json and "procName" in request.json:
+            procName = request.json['procName']
+            arg1     = request.json['arg1']
+            arg2     = request.json['arg2']
+            # do nothing
+        elif "arg1" in request.json and "procName" in request.json:
+            procName = request.json['procName']
+            arg1     = request.json['arg1']
+            results = ""
+            try:
+                if   "FindArtistsAndAlbumsBySongName" in procName:
+                    startTime = datetime.datetime.now()
+                    results = mongoDB.FindArtistsAndAlbumsBySongName(arg1)
+                    endTime = datetime.datetime.now()
+                    deltaTime = endTime - startTime
+                    ms        = int(deltaTime.total_seconds() * 1000)
+                    return  { 'results' : results , 'elapsed' : ms }
+                elif "FindSongsAndAlbumsByArtistName" in procName:
+                    startTime = datetime.datetime.now()
+                    results = mongoDB.FindSongsAndAlbumsByArtistName(arg1)
+                    endTime = datetime.datetime.now()
+                    deltaTime = endTime - startTime
+                    ms        = int(deltaTime.total_seconds() * 1000)
+                    return  { 'results' : results , 'elapsed' : ms }
+                elif "FindSongsAndArtistsByAlbumName" in procName:
+                    startTime = datetime.datetime.now()
+                    results = mongoDB.FindSongsAndArtistsByAlbumName(arg1)
+                    endTime = datetime.datetime.now()
+                    deltaTime = endTime - startTime
+                    ms        = int(deltaTime.total_seconds() * 1000)
+                    return  { 'results' : results , 'elapsed' : ms }
+                else:
+                    return  { 'results' : "" , 'elapsed' : 0  }
+            except Exception as err:
+                print(err)
+                return { 'results' : "" , 'elapsed' : 0 }
+
     # FOR DEVELOPMENT / TESTING USE ONLY , 
     # use this API to pass SQL queries directly into MySQL 
     # do not use in production to avoid SQL injection!)

@@ -14,13 +14,14 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap.min.js"></script>
         <script>  
 
-            var _DataTable;
+            var _DataTable1;
+            var _DataTable2;
             
             async function doSomething1()
             {
                 console.log("Body loaded")
 
-                _DataTable = $('#dt').DataTable({
+                _DataTable1 = $('#dt1').DataTable({
                                                 "columns": [
                                                     { "data": "name"         , "title": "Song Name"    },
                                                     { "data": "year"         , "title": "Year"         },
@@ -30,26 +31,43 @@
                                                     { "data": "artist"       , "title": "Artist"       }
                                                 ]
                                              });
-                                           }
+
+                _DataTable2 = $('#dt2').DataTable({
+                                                "columns": [
+                                                    { "data": "name"         , "title": "Song Name"    },
+                                                    { "data": "year"         , "title": "Year"         },
+                                                    { "data": "disc_number"  , "title": "Disc Number"  },
+                                                    { "data": "track_number" , "title": "Track Number" },
+                                                    { "data": "album"        , "title": "Album"        },
+                                                    { "data": "artist"       , "title": "Artist"       }
+                                                ]
+                                             });
+            }
 
             async function doSomething2()
             {
-                _DataTable.clear().draw();
-                tb.innerHTML = ""
-                tb.innerHTML = "Please wait"
-
                 try
                 {
-                    var _table    = $('#dt').DataTable()
                     let song      = document.getElementById('songName')
                     let artist    = document.getElementById('artistName')
                     let album     = document.getElementById('albumName')
-                    let tb        = document.getElementById('tb')
+                    let tb1       = document.getElementById('tb1')
+                    let tb2       = document.getElementById('tb2')
+                    let elapsed1  = document.getElementById('elapsed1')
+                    let elapsed2  = document.getElementById('elapsed2')
 
                     let hasSong   = false
                     let hasArtist = false
                     let hasAlbum  = false
                     let inputs    = {}
+
+                    _DataTable1.clear().draw();
+                    tb1.innerHTML = ""
+                    tb1.innerHTML = "Please wait"
+
+                    _DataTable2.clear().draw();
+                    tb2.innerHTML = ""
+                    tb2.innerHTML = "Please wait"
 
                     //-------------------------------------------------
                     if( song != null && song.value.length > 0 ) 
@@ -125,11 +143,15 @@
                                                };
                         try
                         {
+                            //----------------------------------------------------------------------------------------------------------
+                            // Call SQL stored procedures
+                            //----------------------------------------------------------------------------------------------------------
                             fetch( 'http://localhost:3000/sql/call' , request_header )
                                             .then(  response => response.json() )
                                             .then(  response => {
-                                                                    const { results } = response
-                                                                    tb.innerHTML = ""
+                                                                    const { results , elapsed } = response
+                                                                    elapsed1.innerHTML = "Query took " + elapsed + " milliseconds"
+                                                                    tb1.innerHTML = ""
                                                                     rows = ""
                                                                     collection = []
                                                                     results.map( record => {
@@ -147,11 +169,42 @@
                                                                                 <td>${artist}</td>
                                                                                </tr>`
                                                                         rows += row
-                                                                        //console.log( "record : " , name , year , disc , track , album , artist )
                                                                     })
-                                                                    tb.innerHTML = rows
-                                                                    _DataTable.clear().draw();
-                                                                    _DataTable.rows.add(collection).draw();
+                                                                    tb1.innerHTML = rows
+                                                                    _DataTable1.clear().draw();
+                                                                    _DataTable1.rows.add(collection).draw();
+                                                                })
+                                            .catch( err      => console.log(err) )
+                            //----------------------------------------------------------------------------------------------------------
+                            // Call MongoDB queries
+                            //----------------------------------------------------------------------------------------------------------
+                            fetch( 'http://localhost:3000/nosql/call' , request_header )
+                                            .then(  response => response.json() )
+                                            .then(  response => { 
+                                                                    const { results , elapsed } = response
+                                                                    elapsed2.innerHTML = "Query took " + elapsed + " milliseconds"
+                                                                    tb2.innerHTML = ""
+                                                                    rows = ""
+                                                                    collection = []
+                                                                    
+                                                                    results.map( record => {
+
+                                                                        collection.push(record)
+                                                                        const { name , year , disc_number , track_number , album , artist } = record
+
+                                                                        const row = `<tr>
+                                                                                <td>${name}</td>
+                                                                                <td>${year}</td>
+                                                                                <td>${disc_number}</td>
+                                                                                <td>${track_number}</td>
+                                                                                <td>${album}</td>
+                                                                                <td>${artist}</td>
+                                                                               </tr>`
+                                                                        rows += row
+                                                                    })
+                                                                    tb2.innerHTML = rows
+                                                                    _DataTable2.clear().draw();
+                                                                    _DataTable2.rows.add(collection).draw();
                                                                 })
                                             .catch( err      => console.log(err) )
                         }
@@ -193,9 +246,10 @@
                     <Button onClick="doSomething2()">Search</Button>
                 </div>
                 <hr>
-
+                <div><h3>Results From MySQL</h3></div>
+                <div><center><b><span id='elapsed1'>Execution Time</span></b></center></div>
                 <div class="container mt-6 mb-6">
-                    <table class='table table-striped' id='dt'>
+                    <table class='table table-striped' id='dt1'>
                         <thead>
                                 <th>song</th>
                                 <th>year</th>
@@ -204,12 +258,29 @@
                                 <th>album</th>
                                 <th>artist</th>
                         </thead>
-                        <tbody  id='tb'>
+                        <tbody  id='tb1'>
                         </tbody>
                     </table>
                 </div>
 
                 <hr>
+                <h3>Results From MongoDB</h3>
+                <div><center><b><span id='elapsed2'>Execution Time</span></b></center></div>
+                <div class="container mt-6 mb-6">
+                    <table class='table table-striped' id='dt2'>
+                        <thead>
+                                <th>song</th>
+                                <th>year</th>
+                                <th>disc</th>
+                                <th>track</th>
+                                <th>album</th>
+                                <th>artist</th>
+                        </thead>
+                        <tbody  id='tb2'>
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
 
     </body>
