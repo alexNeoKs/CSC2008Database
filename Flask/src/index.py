@@ -1,9 +1,11 @@
 import os
 import numpy  as np
 import pandas as pd
+import time
 from   flask  import Flask, render_template, jsonify, request, redirect,url_for
 from   sql    import MySQL
 from   nosql  import MongoDB
+
 try:
     mySQL = None
     mySQL = MySQL()
@@ -83,6 +85,7 @@ try:
             procName = request.json['procName']
             arg1     = request.json['arg1']
             results  = mySQL.call1( procName, arg1 )
+
             return { 'results' : results }
         else:
             return { 'results' : "" }

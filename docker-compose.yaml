@@ -17,7 +17,7 @@ services:
       sql:
         condition: service_healthy
     environment:
-      - WAIT_HOSTS=sql:3306
+      WAIT_HOSTS: sql:3306 , nosql:27019
     networks:
       - localnet
 
@@ -65,9 +65,14 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
-      SERVICE_NAME: mongodb
+      SERVICE_NAME: nosql
     networks:
       - localnet
+    # command: mongod --port 27017 --bind_ip 0.0.0.0
+    # healthcheck:
+    #   test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+    #   interval: 1s
+    #   retries: 120
 
 # docker pull mongo                                    # Create the image
 # docker run -d -p 27019:27019 --name MongoDB mongo    # Run the container
