@@ -84,7 +84,7 @@ if __name__ == "__main__":
     myMongoClient = connectMongo()
 
     # Drop database called spotify
-    myMongoClient.drop_database("spotify")
+    #myMongoClient.drop_database("spotify")
 
     # Get Schema from MongoDB
     myMongoDB = myMongoClient["spotify"]

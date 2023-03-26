@@ -12,13 +12,25 @@ class MySQL:
                                                       #host     = 'csc2008.tplinkdns.com' ,
                                                       #port     = '3307',
                                                       database = 'spotify')
-            if self.db_connect.is_connected():
-                self.db_cursor = self.db_connect.cursor()
-                print("Connected to MySQL at port 3306!")
-            else:
-                raise ValueError('Unable to establish a connection to MySQL database!')
         except Exception as err :
-            raise err
+            try:
+                self.db_connect = None
+                self.db_connect = mysql.connector.connect(user     = 'root'  , 
+                                                          password = 'admin' ,
+                                                          host     = 'localhost' ,
+                                                          port     = '3306',
+                                                          #host     = 'csc2008.tplinkdns.com' ,
+                                                          #port     = '3307',
+                                                          database = 'spotify')
+            except Exception as err :
+                raise err
+        
+        if self.db_connect.is_connected():
+            self.db_cursor = self.db_connect.cursor()
+            print("Connected to MySQL at port 3306!")
+        else:
+            raise ValueError('Unable to establish a connection to MySQL database!')
+
     def __del__(self):
         if self.db_connect != None:
             self.db_connect.close()
