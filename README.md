@@ -117,7 +117,7 @@ Tech-Savvy Users: Spotifu's app-based platform and user interface appeal to thos
 <img src="https://user-images.githubusercontent.com/97490747/227835365-e677fda8-6de9-4f97-a3be-e2ea1961df24.png" alt="TTSH" width="320" height="300">
 <img src="https://user-images.githubusercontent.com/97490747/227835473-81b77d2e-2f77-4cb2-a601-e1ae9a5fb9bf.png" alt="TTSH" width="580" height="500">
 ### (3) Execute the python scripts migrationToMongo.py first, then followed by migrationToMongo2.py
-![image](https://user-images.githubusercontent.com/97490747/227836934-521d9476-3cd4-4236-9a1b-073f608f2788.png)
+<img src="https://user-images.githubusercontent.com/97490747/227836934-521d9476-3cd4-4236-9a1b-073f608f2788.png" alt="TTSH" width="200" height="260">
 
 
 ## Python-Flask Frontend User Interface:
