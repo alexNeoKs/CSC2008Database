@@ -97,30 +97,28 @@ Tech-Savvy Users: Spotifu's app-based platform and user interface appeal to thos
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Prerequisites
-### Our application uses the following ports, please ensure these ports are not used by other applications.
+### Our application uses the following ports, please ensure these ports are not already used by other applications.
+<img src="https://user-images.githubusercontent.com/97490747/227834477-923762a7-e632-4a79-b813-5087ce864c70.png" alt="TTSH" width="300" height="300">
+
 ### (1) Default port 3000 for Flask
 ### (2) Default port 3306 for MySQL
 ### (3) Default port 27017 for MongoDB
-<img src="https://user-images.githubusercontent.com/97490747/227834477-923762a7-e632-4a79-b813-5087ce864c70.png" alt="TTSH" width="300" height="300">
-
 
 ## Docker Setup : 
 ### (1) Download and install the latest Docker Desktop for Windows 
 ### (2) Clone the github repository from https://github.com/alexNeoKs/CSC2008Database.git 
 ### (3) Execute the windows batch file “Untrack_README_txt.bat” found in the root directory of our repository 
 ### (4) Type “docker compose up”, and wait for Docker to launch our application within a container (a container containing a Python Flask container, a MySQL container and a MongoDB container. 
-
 <img src="https://user-images.githubusercontent.com/97490747/227764320-491324a2-cf13-484c-8249-da87d0da2e2d.png" alt="TTSH" width="600" height="400">
 
-
 ## Database Setup:
-### Download the backup copy of our MySQL spotify database from this link or this link.
-### Launch MySQL Workbench and data import the database downloaded.
+### (1) Download the backup copy of our MySQL spotify database from this link or this link.
+### (2) Launch MySQL Workbench and data import the database downloaded.
 <img src="https://user-images.githubusercontent.com/97490747/227835365-e677fda8-6de9-4f97-a3be-e2ea1961df24.png" alt="TTSH" width="320" height="300">
 <img src="https://user-images.githubusercontent.com/97490747/227835473-81b77d2e-2f77-4cb2-a601-e1ae9a5fb9bf.png" alt="TTSH" width="550" height="500">
 
 ## Python-Flask Frontend User Interface:
-### You can proceed to visit our application frontend by typing “localhost:3000” into a web browsing application.
+### (1) You can proceed to visit our application frontend by typing “localhost:3000” into a web browsing application.
 
 
 
