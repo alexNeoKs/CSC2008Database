@@ -110,14 +110,14 @@ Tech-Savvy Users: Spotifu's app-based platform and user interface appeal to thos
 ### (3) Execute the windows batch file “Untrack_README_txt.bat” found in the root directory of our repository 
 ### (4) Type “docker compose up”, and wait for Docker to launch our application within a container (a container containing a Python Flask container, a MySQL container and a MongoDB container. 
 
-<img src="https://user-images.githubusercontent.com/97490747/227764320-491324a2-cf13-484c-8249-da87d0da2e2d.png" alt="TTSH" width="400" height="600">
+<img src="https://user-images.githubusercontent.com/97490747/227764320-491324a2-cf13-484c-8249-da87d0da2e2d.png" alt="TTSH" width="600" height="400">
 
 
 ## Database Setup:
 ### Download the backup copy of our MySQL spotify database from this link or this link.
 ### Launch MySQL Workbench and data import the database downloaded.
-<img src="https://user-images.githubusercontent.com/97490747/227835365-e677fda8-6de9-4f97-a3be-e2ea1961df24.png" alt="TTSH" width="300" height="320">
-<img src="https://user-images.githubusercontent.com/97490747/227835473-81b77d2e-2f77-4cb2-a601-e1ae9a5fb9bf.png" alt="TTSH" width="500" height="550">
+<img src="https://user-images.githubusercontent.com/97490747/227835365-e677fda8-6de9-4f97-a3be-e2ea1961df24.png" alt="TTSH" width="320" height="300">
+<img src="https://user-images.githubusercontent.com/97490747/227835473-81b77d2e-2f77-4cb2-a601-e1ae9a5fb9bf.png" alt="TTSH" width="550" height="500">
 
 ## Python-Flask Frontend User Interface:
 ### You can proceed to visit our application frontend by typing “localhost:3000” into a web browsing application.
