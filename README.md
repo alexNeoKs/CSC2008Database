@@ -112,7 +112,7 @@ Tech-Savvy Users: Spotifu's app-based platform and user interface appeal to thos
 <img src="https://user-images.githubusercontent.com/97490747/227764320-491324a2-cf13-484c-8249-da87d0da2e2d.png" alt="TTSH" width="600" height="400">
 
 ## Database Setup:
-### (1) Download the backup copy of our MySQL spotify database from this <a href='https://drive.google.com/file/d/1jMIKbmNJ5RJ8gXzzZFCzs9aVHhq36OOl/view?usp=sharing'>link</a> or this link.
+### (1) Download the backup copy of our MySQL spotify database from this <a href='https://drive.google.com/file/d/1jMIKbmNJ5RJ8gXzzZFCzs9aVHhq36OOl/view?usp=sharing'>link</a>.
 ### (2) Launch MySQL Workbench and data import the database downloaded.
 <img src="https://user-images.githubusercontent.com/97490747/227835365-e677fda8-6de9-4f97-a3be-e2ea1961df24.png" alt="TTSH" width="320" height="300">
 <img src="https://user-images.githubusercontent.com/97490747/227835473-81b77d2e-2f77-4cb2-a601-e1ae9a5fb9bf.png" alt="TTSH" width="580" height="500">
