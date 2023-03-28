@@ -3,11 +3,17 @@
 
     <head>
         <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
-
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>
+            Spotifu
+        </title>
+         <!-- CSS Files -->
+        <link id="pagestyle" href="../static/soft-ui-dashboard.css" rel="stylesheet" />
     </head>
-    <body>
+    <body style="background-color:#191414">
 
-        <form method="post" style="border:1px solid #ccc">
+        <!-- <form method="post" style="border:1px solid #ccc">
             <div class="container">
                 <h1>Sign Up</h1>
                 <p>Please fill in this form to create an account.</p>
@@ -32,7 +38,58 @@
                 </div>
                 
             </div>
-        </form>
+        </form> -->
+
+
+        <div class="container" style="margin-top:200px">
+            <div class="row mt-lg-n10 mt-md-n11 mt-n10">
+              <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
+                <div class="card z-index-0">
+                  <div class="card-header text-center pt-4" style="background-color: rgba(0, 0, 0, 0.903);">
+                    
+                    
+                    <a class="navbar-brand m-0" href="" target="_blank">
+                        <img src="../static/img/spotify-logo-png-7053.png" width="50px">
+                        <span class="ms-1 font-weight-bold" style="color:white;font-size: 28px;">Spotifu</span>
+                    </a>
+    
+                    <h5 style="color:white;margin-top: 50px;"">SIGN UP</h5>
+                  </div>
+                  <div class="row px-xl-5 px-sm-4 px-3">
+                    
+                   
+                    
+                  </div>
+                  <div class="card-body" style="background-color: rgba(0, 0, 0, 0.903);">
+                    <form role="form text-left" method="post" style="border: 0px;">
+                      <div class="mb-3">
+                        <input id="username" type="text" class="form-control" placeholder="Enter Username" aria-label="Name" name="username" required>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <input id="password" type="password" class="form-control" placeholder="Enter Password" aria-label="Password" name="password" required>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <input  type="password" class="form-control" placeholder="Repeat Password" aria-label="Password" name="password-repeat" required>
+                      </div>
+
+
+                      <div class="text-center">
+                        <button id = "signup" type="submit" class="btn w-100 my-4 mb-2" style="background-color: #1db954;color:#ffffff">SIGN UP</button>
+                        
+                        <button type="button" class="btn w-100 my-4 mb-2" style="background-color: #b43030;color:#ffffff" id = "cancel">Cancel</button>
+                            
+                        
+                      </div>
+                      
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
 
     </body>
     <script>
